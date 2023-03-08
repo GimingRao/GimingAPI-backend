@@ -30,7 +30,7 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         String requestParams = interfaceInfo.getRequestParams();
         String responseHeader = interfaceInfo.getResponseHeader();
         if (add){
-            if (StringUtils.isAnyBlank(name,method,description,requestHeader,requestParams,responseHeader)){
+            if (StringUtils.isAnyBlank(name,method,description,requestHeader,responseHeader)){
                 throw new BusinessException(ErrorCode.PARAMS_ERROR);
             }
         }
