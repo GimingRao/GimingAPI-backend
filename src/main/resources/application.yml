@@ -8,6 +8,7 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
   # session 配置
   session:
     # todo 取消注释开启分布式 session（须先配置 Redis）
@@ -87,3 +88,7 @@ cos:
     secretKey: xxx
     region: xxx
     bucket: xxx
+giming:
+  client:
+    access-key: Giming
+    secret-key: 12345

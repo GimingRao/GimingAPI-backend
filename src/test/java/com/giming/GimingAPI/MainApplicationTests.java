@@ -1,5 +1,7 @@
 package com.giming.GimingAPI;
 
+import com.example.apinlp.APINLPConfig;
+import com.example.apinlp.Client.WordClient;
 import com.giming.GimingAPI.config.WxOpenConfig;
 
 import javax.annotation.Resource;
@@ -14,13 +16,15 @@ import org.springframework.boot.test.context.SpringBootTest;
  */
 @SpringBootTest
 class MainApplicationTests {
+    @Resource
+    WordClient wordClient;
 
     @Resource
     private WxOpenConfig wxOpenConfig;
 
     @Test
     void contextLoads() {
-        System.out.println(wxOpenConfig);
+        System.out.println(wordClient.Reword("安徽大学"));
     }
 
 }
