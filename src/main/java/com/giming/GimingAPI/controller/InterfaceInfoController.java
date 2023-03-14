@@ -2,12 +2,9 @@ package com.giming.GimingAPI.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.giming.GimingAPI.common.*;
 import com.google.gson.Gson;
 import com.giming.GimingAPI.annotation.AuthCheck;
-import com.giming.GimingAPI.common.BaseResponse;
-import com.giming.GimingAPI.common.DeleteRequest;
-import com.giming.GimingAPI.common.ErrorCode;
-import com.giming.GimingAPI.common.ResultUtils;
 import com.giming.GimingAPI.constant.CommonConstant;
 import com.giming.GimingAPI.constant.UserConstant;
 import com.giming.GimingAPI.exception.BusinessException;
@@ -175,8 +172,48 @@ public class InterfaceInfoController {
 
     }
 
-
-
+    /**
+     * 上线接口
+     *仅管理员可用
+     * @param idRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/online")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> onlineInterfaceInfo(@RequestBody IDRequest idRequest, HttpServletRequest request) {
+        if (idRequest == null || idRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User user = userService.getLoginUser(request);
+        long id = idRequest.getId();
+        // 判断是否存在
+        InterfaceInfo interfaceInfo = this.interfaceInfoService.getById(id);
+        ThrowUtils.throwIf(interfaceInfo == null, ErrorCode.NOT_FOUND_ERROR);
+        //判断接口是否可用
+        //todo
+        //
+        //更改接口状态
+        interfaceInfo.setStatus(1);
+        boolean b = interfaceInfoService.updateById(interfaceInfo);
+        return ResultUtils.success(b);
+    }
+    @PostMapping("/offline")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> offlineInterfaceInfo(@RequestBody IDRequest idRequest, HttpServletRequest request) {
+        if (idRequest == null || idRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User user = userService.getLoginUser(request);
+        long id = idRequest.getId();
+        // 判断是否存在
+        InterfaceInfo interfaceInfo = this.interfaceInfoService.getById(id);
+        ThrowUtils.throwIf(interfaceInfo == null, ErrorCode.NOT_FOUND_ERROR);
+        //更改接口状态
+        interfaceInfo.setStatus(0);
+        boolean b = interfaceInfoService.updateById(interfaceInfo);
+        return ResultUtils.success(b);
+    }
 
 
 }
