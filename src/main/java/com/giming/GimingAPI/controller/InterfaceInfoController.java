@@ -1,8 +1,14 @@
 package com.giming.GimingAPI.controller;
 
+import cn.hutool.crypto.digest.MD5;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.giming.GimingAPI.common.*;
+import com.giming.GimingAPI.model.dto.interfaceinfo.InvokeInterfaceRequest;
 import com.google.gson.Gson;
 import com.giming.GimingAPI.annotation.AuthCheck;
 import com.giming.GimingAPI.constant.CommonConstant;
@@ -24,6 +30,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 帖子接口
@@ -216,4 +224,57 @@ public class InterfaceInfoController {
     }
 
 
+    /**
+     * 调用接口信息
+     *
+     * @param invokeInterfaceRequest 调用接口信息
+     * @param request                http请求
+     * @return {@code BaseResponse<Boolean>}
+     * 1. 健壮性检验
+     * 2. 得到ak、sk
+     * 3. 查库得到url与请求方式
+     * 4. 生成密匙
+     * 5. HuTuHttp发送请求
+     */
+    @PostMapping("/innvoke")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Object> invokeInterfaceInfo(@RequestBody InvokeInterfaceRequest invokeInterfaceRequest, HttpServletRequest request) {
+        if (invokeInterfaceRequest==null||invokeInterfaceRequest.getId()<0){
+            throw  new BusinessException(ErrorCode.PARAMS_ERROR,"请求id错误");
+        }
+        User loginUser = userService.getLoginUser(request);
+        String accessKey = loginUser.getAccessKey();
+        String secretKey = loginUser.getSecretKey();
+        //查库得到url与请求方式
+        String requestParams = invokeInterfaceRequest.getRequestParams();
+        InterfaceInfo interfaceInfo = interfaceInfoService.getById(invokeInterfaceRequest.getId());
+        String url = interfaceInfo.getUrl();
+        String method = interfaceInfo.getMethod();
+        //生成密匙
+        //获取时间戳、生成nonce
+        String currentTime = String.valueOf(System.currentTimeMillis());
+        //secretKey+currentTime+PrioiText+accessKey加密
+        String signedSecretKey = MD5.create().digestHex(secretKey+currentTime+accessKey);
+        //封装成Header
+        Map<String,String> head=new HashMap<>();
+        head.put("signedsecretKey",signedSecretKey);
+        head.put("accessKey",accessKey);
+        head.put("currentTime",currentTime);
+        if ("POST".equals(method)){
+            String responseBody = HttpRequest.post(url)
+                    .addHeaders(head)
+                    .body(requestParams)
+                    .execute().body();
+            return ResultUtils.success(responseBody);
+        }else if ("GET".equals(method)){
+            JSONObject entries = JSONUtil.parseObj(requestParams);
+            String urlWithParam = url + "?" + HttpUtil.toParams(entries);
+            String requestBody = HttpRequest.get(urlWithParam)
+                    .addHeaders(head)
+                    .execute().body();
+            return ResultUtils.success(request);
+        }else {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求方式错误");
+        }
+    }
 }
