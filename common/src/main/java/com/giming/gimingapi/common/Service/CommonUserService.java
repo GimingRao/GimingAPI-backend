@@ -8,6 +8,6 @@ import com.giming.gimingapi.common.model.UserCommon;
  * @author GimingRao
  * @data 2023/3/27 14:51
  */
-public interface CommerUserService {
-    UserCommon getUserByAccessKey(int accessKey);
+public interface CommonUserService {
+    String getSecretKeyByAccessKey(String accessKey);
 }

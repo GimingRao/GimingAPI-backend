@@ -2,6 +2,7 @@ package com.giming.GimingAPI.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.giming.GimingAPI.model.entity.User;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 用户数据库操作
