@@ -11,7 +11,7 @@ spring:
             - Path=/api/**
 dubbo:
   application:
-    name: dubbo-springboot-demo-consumer
+    name: dubbo-springboot-demo-cousmer
   protocol:
     name: dubbo
     port: -1
