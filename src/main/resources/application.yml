@@ -92,3 +92,11 @@ giming:
   client:
     access-key: Giming
     secret-key: 12345
+dubbo:
+  application:
+    name: dubbo-api-platform-backend-provider
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://localhost:8848

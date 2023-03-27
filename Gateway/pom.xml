@@ -12,8 +12,15 @@
     <artifactId>Gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Gateway</name>
+    <repositories>
+        <repository>
+            <id>tk.mybatis</id>
+            <url>https://maven.aliyun.com/repository/public</url>
+        </repository>
+    </repositories>
     <description>Gateway</description>
     <properties>
+        <dubbo.version>3.2.0-beta.4</dubbo.version>
         <java.version>1.8</java.version>
         <spring-cloud.version>2021.0.6</spring-cloud.version>
     </properties>
@@ -33,6 +40,38 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.8.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.nacos</groupId>
+            <artifactId>nacos-client</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-bom</artifactId>
+            <version>${dubbo.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+            <version>${dubbo.version}</version>
+        </dependency>
+
+
     </dependencies>
     <dependencyManagement>
         <dependencies>

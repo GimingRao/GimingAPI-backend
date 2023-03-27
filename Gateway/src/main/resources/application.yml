@@ -9,3 +9,11 @@ spring:
           uri: http://localhost:8123
           predicates:
             - Path=/api/**
+dubbo:
+  application:
+    name: dubbo-springboot-demo-consumer
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://localhost:8848
